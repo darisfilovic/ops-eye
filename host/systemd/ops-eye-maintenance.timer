@@ -1,0 +1,10 @@
+[Unit]
+Description=Run ops-eye cleanup every Sunday at 03:00
+
+[Timer]
+OnCalendar=Sun *-*-* 03:00:00
+Persistent=true
+RandomizedDelaySec=15min
+
+[Install]
+WantedBy=timers.target

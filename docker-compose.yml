@@ -1,0 +1,104 @@
+# ops-eye: local-only operations view. Every port binds to 127.0.0.1.
+# Start:   docker compose up -d
+# GeoIP:   docker compose --profile geoip up -d   (needs MaxMind keys in .env)
+
+services:
+
+  # Web traffic, bots, 404s and geography from the Nginx Proxy Manager logs.
+  goaccess:
+    image: xavierh/goaccess-for-nginxproxymanager:v1.1.40
+    container_name: ops-eye-goaccess
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${OPS_GOACCESS_PORT:-7880}:7880"
+    environment:
+      TZ: ${TZ:-UTC}
+      # NPM+R also parses the fallback log: requests that hit the bare IP address.
+      LOG_TYPE: NPM+R
+      EXCLUDE_IPS: ${EXCLUDE_IPS:-127.0.0.1}
+      HTML_REFRESH: 30
+      KEEP_LAST: 60
+      SKIP_ARCHIVED_LOGS: "False"
+    volumes:
+      - ${NPM_LOGS_DIR}:/opt/log:ro
+
+  # Server and container metrics with alerts.
+  beszel:
+    image: henrygd/beszel:0.19.0
+    container_name: ops-eye-beszel
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${OPS_BESZEL_PORT:-8090}:8090"
+    volumes:
+      - ./data/beszel:/beszel_data
+      - ./data/beszel_socket:/beszel_socket
+
+  beszel-agent:
+    image: henrygd/beszel-agent:0.19.0
+    container_name: ops-eye-beszel-agent
+    restart: unless-stopped
+    # Host network: the agent reads host interfaces and disks.
+    network_mode: host
+    volumes:
+      - ./data/beszel_agent:/var/lib/beszel-agent
+      - ./data/beszel_socket:/beszel_socket
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      LISTEN: /beszel_socket/beszel.sock
+      HUB_URL: http://localhost:${OPS_BESZEL_PORT:-8090}
+      KEY: ${BESZEL_KEY:-}
+      TOKEN: ${BESZEL_TOKEN:-}
+
+  # Banned addresses per jail, read from the fail2ban socket.
+  fail2ban-dashboard:
+    image: ghcr.io/webishdev/fail2ban-dashboard:v0.11.2
+    container_name: ops-eye-fail2ban
+    restart: unless-stopped
+    # The fail2ban socket is readable by root only.
+    user: root
+    ports:
+      - "127.0.0.1:${OPS_F2B_PORT:-8091}:3000"
+    environment:
+      F2BD_ADDRESS: 0.0.0.0:3000
+      F2BD_CACHE_DIR: /cache
+      F2BD_REFRESH_SECONDS: 30
+    volumes:
+      - /var/run/fail2ban/fail2ban.sock:/var/run/fail2ban/fail2ban.sock:ro
+      - ./data/fail2ban-dashboard:/cache
+
+  # Containers, images, volumes and logs with buttons. Portainer needs the
+  # Docker socket with write access, which is equivalent to root on the
+  # host: keep it on 127.0.0.1 and behind its own login.
+  portainer:
+    image: portainer/portainer-ce:2.45.2
+    container_name: ops-eye-portainer
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${OPS_PORTAINER_PORT:-9000}:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data/portainer:/data
+
+  # The status page: static files written by python3 -m opseye.
+  status:
+    image: nginx:1.27-alpine
+    container_name: ops-eye-status
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${OPS_STATUS_PORT:-8092}:80"
+    volumes:
+      - ./out:/usr/share/nginx/html:ro
+
+  # Optional: fresh GeoLite2 databases from MaxMind.
+  geoipupdate:
+    image: maxmind/geoipupdate:v7
+    container_name: ops-eye-geoipupdate
+    restart: unless-stopped
+    profiles: ["geoip"]
+    environment:
+      GEOIPUPDATE_ACCOUNT_ID: ${GEOIPUPDATE_ACCOUNT_ID:-}
+      GEOIPUPDATE_LICENSE_KEY: ${GEOIPUPDATE_LICENSE_KEY:-}
+      GEOIPUPDATE_EDITION_IDS: GeoLite2-City GeoLite2-Country GeoLite2-ASN
+      GEOIPUPDATE_FREQUENCY: 72
+    volumes:
+      - ./geoip:/usr/share/GeoIP

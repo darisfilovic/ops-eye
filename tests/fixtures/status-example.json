@@ -1,0 +1,415 @@
+{
+ "generated": "2026-10-19T09:30:00+02:00",
+ "host": "vps-01",
+ "lang": "en",
+ "elapsed": 3.4,
+ "attention": [
+  {
+   "severity": "warn",
+   "text": "system requests a reboot (new kernel)",
+   "advice": "Plan a reboot in a quiet period."
+  },
+  {
+   "severity": "crit",
+   "text": "Database staging: Overdue cron jobs 12",
+   "advice": "Database missing from db_name in odoo.conf, or the cron worker is stuck; restart the web container."
+  },
+  {
+   "severity": "warn",
+   "text": "staging.example.com: Certificate expires in 12 days",
+   "advice": "Check renewal in Nginx Proxy Manager (SSL Certificates)."
+  },
+  {
+   "severity": "warn",
+   "text": "Listening ports: 5432/tcp public (docker-proxy)",
+   "advice": "Close the port in the compose file or ufw unless it is meant to be public."
+  }
+ ],
+ "sections": [
+  {
+   "key": "server",
+   "kv": [
+    [
+     "Load (1, 5, 15 min)",
+     "0.42 / 0.37 / 0.31",
+     "ok"
+    ],
+    [
+     "CPUs",
+     "2",
+     "ok"
+    ],
+    [
+     "Memory",
+     "2.7 GB used / 3.8 GB (71 %)",
+     "ok"
+    ],
+    [
+     "Swap",
+     "64.0 MB used / 2.0 GB",
+     "ok"
+    ],
+    [
+     "Disk /",
+     "33.6 GB used / 78.7 GB (43 %), 45.1 GB free",
+     "ok"
+    ],
+    [
+     "Journal",
+     "286.0M",
+     "ok"
+    ],
+    [
+     "Up since",
+     "12.10.2026 04:12 (7 d)",
+     "ok"
+    ],
+    [
+     "Reboot",
+     "system requests a reboot (new kernel)",
+     "warn"
+    ],
+    [
+     "Pending updates",
+     "6",
+     "ok"
+    ],
+    [
+     "Automatic security updates",
+     "active",
+     "ok"
+    ],
+    [
+     "Last apt update",
+     "19.10.2026 06:02",
+     "ok"
+    ]
+   ],
+   "tables": []
+  },
+  {
+   "key": "containers",
+   "kv": [],
+   "tables": [
+    {
+     "head": [
+      "Name",
+      "State",
+      "Status",
+      "Memory",
+      "CPU",
+      "Image"
+     ],
+     "rows": [
+      [
+       "odoo-db-1",
+       "running",
+       "Up 7 days",
+       "620.4MiB",
+       "2.31%",
+       "postgres:16",
+       "ok"
+      ],
+      [
+       "odoo-web-1",
+       "running",
+       "Up 2 days",
+       "1.31GiB",
+       "6.85%",
+       "odoo:17.0",
+       "ok"
+      ],
+      [
+       "npm-app-1",
+       "running",
+       "Up 7 days",
+       "98.4MiB",
+       "0.05%",
+       "jc21/nginx-proxy-manager:2.12.6",
+       "ok"
+      ]
+     ],
+     "num_cols": [
+      3,
+      4
+     ],
+     "state_col": false
+    }
+   ]
+  },
+  {
+   "key": "odoo",
+   "kv": [
+    [
+     "ERROR lines in log (24 h)",
+     "3",
+     "ok"
+    ]
+   ],
+   "tables": [
+    {
+     "head": [
+      "Database",
+      "Overdue cron jobs",
+      "Size",
+      "Connections"
+     ],
+     "rows": [
+      [
+       "production",
+       "0 of 47",
+       "1.4 GB",
+       "11",
+       "ok"
+      ],
+      [
+       "staging",
+       "12 of 45",
+       "312.6 MB",
+       "2",
+       "crit"
+      ]
+     ],
+     "num_cols": [
+      2,
+      3
+     ],
+     "state_col": true
+    },
+    {
+     "head": [
+      "Domain",
+      "HTTP /web/health",
+      "Certificate expires in"
+     ],
+     "rows": [
+      [
+       "erp.example.com",
+       "200 (148 ms)",
+       "61 days",
+       "ok"
+      ],
+      [
+       "staging.example.com",
+       "200 (212 ms)",
+       "12 days",
+       "warn"
+      ]
+     ],
+     "num_cols": [],
+     "state_col": true
+    }
+   ]
+  },
+  {
+   "key": "traffic",
+   "kv": [
+    [
+     "Requests",
+     "48.215",
+     "ok"
+    ],
+    [
+     "By status",
+     "2xx 41902, 3xx 2210, 4xx 4061, 5xx 42",
+     "ok"
+    ],
+    [
+     "Scanner hits (.php, .env, wp-, xmlrpc.php)",
+     "3388",
+     "info"
+    ],
+    [
+     "Hits on the bare IP address",
+     "512",
+     "info"
+    ]
+   ],
+   "tables": [
+    {
+     "head": [
+      "Most active addresses",
+      "requests"
+     ],
+     "rows": [
+      [
+       "203.0.113.24",
+       "6120",
+       "ok"
+      ],
+      [
+       "198.51.100.7",
+       "2934",
+       "ok"
+      ],
+      [
+       "203.0.113.81",
+       "1406",
+       "ok"
+      ],
+      [
+       "192.0.2.44",
+       "877",
+       "ok"
+      ],
+      [
+       "198.51.100.150",
+       "612",
+       "ok"
+      ]
+     ],
+     "num_cols": [
+      1
+     ],
+     "state_col": false
+    }
+   ]
+  },
+  {
+   "key": "security",
+   "kv": [
+    [
+     "SSH, last 24 hours",
+     "9 key logins, 0 password logins, 412 failed attempts",
+     "ok"
+    ],
+    [
+     "Domain registration expires in (example.com)",
+     "212 days",
+     "ok"
+    ]
+   ],
+   "tables": [
+    {
+     "head": [
+      "Jail",
+      "Banned now",
+      "Total bans",
+      "Failures in progress"
+     ],
+     "rows": [
+      [
+       "npm-default-scanner",
+       "14",
+       "302",
+       "1",
+       "ok"
+      ],
+      [
+       "npm-scanner",
+       "38",
+       "1215",
+       "3",
+       "ok"
+      ],
+      [
+       "sshd",
+       "2",
+       "57",
+       "0",
+       "ok"
+      ]
+     ],
+     "num_cols": [
+      1,
+      2,
+      3
+     ],
+     "state_col": false
+    },
+    {
+     "head": [
+      "Port",
+      "Address",
+      "Process"
+     ],
+     "rows": [
+      [
+       "5432/tcp",
+       "public",
+       "docker-proxy",
+       "warn"
+      ],
+      [
+       "22/tcp",
+       "public",
+       "sshd",
+       "ok"
+      ],
+      [
+       "53/udp",
+       "local only",
+       "systemd-resolve",
+       "ok"
+      ],
+      [
+       "80/tcp",
+       "public",
+       "docker-proxy",
+       "ok"
+      ],
+      [
+       "443/tcp",
+       "public",
+       "docker-proxy",
+       "ok"
+      ],
+      [
+       "8092/tcp",
+       "local only",
+       "docker-proxy",
+       "ok"
+      ]
+     ],
+     "num_cols": [],
+     "state_col": true
+    }
+   ]
+  },
+  {
+   "key": "docker_space",
+   "kv": [],
+   "tables": [
+    {
+     "head": [
+      "Type",
+      "Size",
+      "Reclaimable"
+     ],
+     "rows": [
+      [
+       "Images",
+       "6.21GB",
+       "1.08GB (17%)",
+       "ok"
+      ],
+      [
+       "Containers",
+       "412.3MB",
+       "0B (0%)",
+       "ok"
+      ],
+      [
+       "Local Volumes",
+       "2.87GB",
+       "0B (0%)",
+       "ok"
+      ],
+      [
+       "Build Cache",
+       "0B",
+       "0B",
+       "ok"
+      ]
+     ],
+     "num_cols": [
+      1,
+      2
+     ],
+     "state_col": true
+    }
+   ]
+  }
+ ],
+ "errors": []
+}

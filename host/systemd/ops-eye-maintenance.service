@@ -1,0 +1,10 @@
+[Unit]
+Description=ops-eye weekly cleanup
+After=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=__OPS_EYE_ROOT__
+ExecStart=/usr/bin/bash __OPS_EYE_ROOT__/host/maintenance.sh
+Nice=10
+IOSchedulingClass=idle

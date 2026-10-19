@@ -1,0 +1,11 @@
+[Unit]
+Description=ops-eye status page refresh
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=__OPS_EYE_ROOT__
+ExecStart=/usr/bin/python3 -m opseye
+Nice=10
+IOSchedulingClass=idle

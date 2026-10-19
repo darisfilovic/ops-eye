@@ -1,0 +1,16 @@
+# secrets and per-server settings
+.env
+# runtime data of the monitoring containers
+data/
+# generated status page and lookup cache
+out/
+# downloaded GeoIP databases
+geoip/*.mmdb
+# editor and OS noise
+.vscode/
+.idea/
+.DS_Store
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/

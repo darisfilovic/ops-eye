@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# ops-eye command line entry point. Run from anywhere.
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+# With MaxMind keys and downloaded databases, run the stack with the GeoIP overlay.
+if grep -q '^GEOIPUPDATE_LICENSE_KEY=.\+' .env 2>/dev/null && [ -f geoip/GeoLite2-City.mmdb ]; then
+  export COMPOSE_FILE="docker-compose.yml:docker-compose.geoip.yml"
+  export COMPOSE_PROFILES="geoip"
+fi
+case "${1:-help}" in
+  check)      python3 -m opseye --text ;;
+  page)       python3 -m opseye ;;
+  setup)      python3 bin/setup.py ;;
+  up)         docker compose up -d ;;
+  down)       docker compose down ;;
+  status)     docker compose ps ;;
+  shots)      python3 tools/screenshots.py "${2:-http://127.0.0.1:${OPS_STATUS_PORT:-8092}/}" ${3:+"$3"} ;;
+  install-timer) bash host/install-timer.sh ;;
+  geoip)
+    grep -q '^GEOIPUPDATE_LICENSE_KEY=.\+' .env || { echo "Set GEOIPUPDATE_ACCOUNT_ID and GEOIPUPDATE_LICENSE_KEY in .env first."; exit 1; }
+    mkdir -p geoip
+    docker compose -f docker-compose.yml --profile geoip run --rm -e GEOIPUPDATE_FREQUENCY=0 geoipupdate
+    ls -la geoip/*.mmdb
+    COMPOSE_FILE="docker-compose.yml:docker-compose.geoip.yml" COMPOSE_PROFILES="geoip" docker compose up -d
+    ;;
+  help|*)
+    cat <<USAGE
+ops-eye <command>
+
+  check          print the status report to the terminal
+  page           regenerate the status page (out/)
+  setup          first-run accounts for Portainer and Beszel
+  up | down      start or stop the monitoring containers
+  status         container list
+  shots [url] [dir]   screenshots of the status page (needs Playwright)
+  install-timer  install the systemd timer that refreshes the page every 5 minutes
+  geoip          download MaxMind GeoLite2 databases and restart GoAccess with them
+USAGE
+    ;;
+esac

@@ -1,0 +1,36 @@
+ops-eye
+Copyright (c) 2026 Daris Filovic. All rights reserved.
+
+This repository is published so that its source code can be read, for
+example as part of the author's portfolio. Publishing it does not grant a
+licence to use it, and no licence is granted by implication.
+
+Without prior written permission from the copyright holder, you may not:
+
+1. use, run, install or deploy the software, in whole or in part, on any
+   system;
+2. copy, modify, translate or adapt the software, or create works based on
+   it;
+3. publish, distribute, sublicense, rent or sell the software or any part
+   of it;
+4. offer the software, or a service built on it, to others, whether for a
+   fee or free of charge.
+
+The following is permitted without asking: reading the source code, and
+viewing and forking the repository on GitHub to the extent that the GitHub
+Terms of Service grant those rights to GitHub users. A fork does not carry
+any of the rights listed above.
+
+Permission is given only in writing and only for the scope it names. To
+ask for permission, contact the author through https://github.com/darisfilovic.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+The third-party tools that ops-eye starts (GoAccess, Beszel,
+fail2ban-dashboard, Portainer, nginx, geoipupdate) are not part of this
+repository and remain under their own licences.

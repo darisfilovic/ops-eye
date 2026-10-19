@@ -1,0 +1,13 @@
+# /etc/logrotate.d/ops-eye-app
+# Application log written by a container into a host directory (for example
+# Odoo's logfile that fail2ban reads). copytruncate keeps the file handle the
+# container holds; the process keeps writing without a restart.
+__APP_LOG_DIR__/*.log {
+    daily
+    rotate 14
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+}

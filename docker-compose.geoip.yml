@@ -1,0 +1,10 @@
+# Overlay: use the MaxMind databases kept fresh by the geoipupdate service
+# instead of the copies baked into the GoAccess image. Apply with
+#   bin/ops-eye geoip      (first download, then start with this overlay)
+# bin/ops-eye up adds this file automatically once the databases exist.
+services:
+  goaccess:
+    volumes:
+      - ./geoip/GeoLite2-City.mmdb:/goaccess-config/GeoLite2-City.mmdb:ro
+      - ./geoip/GeoLite2-Country.mmdb:/goaccess-config/GeoLite2-Country.mmdb:ro
+      - ./geoip/GeoLite2-ASN.mmdb:/goaccess-config/GeoLite2-ASN.mmdb:ro
